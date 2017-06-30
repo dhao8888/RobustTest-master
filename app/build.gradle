@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+
+//打补丁时开启此插件，用于生成patch.jar
+//apply plugin: 'auto-patch-plugin'
+
+//首次生成样例apk时开启此插件，用于生成mapping.txt(混淆加解密)和robustMethod.robust(记录注解)
+apply plugin: 'robust'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.snail.robusttest"
+        minSdkVersion 19
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        snail {
+            storeFile file("keystore.jks")
+            storePassword "robust"
+            keyAlias "robust"
+            keyPassword "robust"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.snail
+        }
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.meituan.robust:robust:0.3.3'
+}
